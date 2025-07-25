@@ -16,5 +16,6 @@ namespace Domain.Models
         public string State { get; set; } // Active, Cancelled
         public int ClientId { get; set; }
 
+        public virtual Client Client { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace Infraestructure
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Policy> Policies { get; set; }
-
+        public DbSet<Client> Clients { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Policy>(entity =>
@@ -27,6 +27,23 @@ namespace Infraestructure
                 entity.Property(p => p.State).HasMaxLength(20);
                 entity.Property(p => p.ClientId).IsRequired();
             });
+
+            modelBuilder.Entity<Client>()
+           .HasKey(c => c.IdentificationNumber);
+
+            modelBuilder.Entity<Client>()
+                .HasIndex(c => c.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Client>()
+                .Property(c => c.FullName)
+                .IsRequired();
+
+            modelBuilder.Entity<Client>()
+                .HasMany(c => c.Policies)
+                .WithOne(p => p.Client)
+                .HasForeignKey(p => p.ClientId)
+                .OnDelete(DeleteBehavior.Cascade);
             base.OnModelCreating(modelBuilder);
         }
     }
