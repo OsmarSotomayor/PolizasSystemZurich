@@ -9,10 +9,10 @@ namespace Application.Interfaces
 {
     public interface IClientService
     {
-        Task AddAsync(ClientCreateDto createDto);
-        Task UpdateAsync(string identificationNumber, ClientUpdateDto updateDto);
-        Task DeleteAsync(string identificationNumber);
-        Task<ClientDto?> GetByIdAsync(string identificationNumber);
+        Task<int> AddAsync(ClientCreateDto createDto);
+        Task UpdateAsync(int identificationNumber, ClientUpdateDto updateDto);
+        Task DeleteAsync(int identificationNumber);
+        Task<ClientDto?> GetByIdAsync(int identificationNumber);
 
         Task<IEnumerable<ClientDto>> FilterAsync(string? name, string? email, int identificationNumber);
 

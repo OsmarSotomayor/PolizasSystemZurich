@@ -23,38 +23,41 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task AddAsync(ClientCreateDto createDto)
+        public async Task<int> AddAsync(ClientCreateDto createDto)
         {
-            var clientExists = await _clientRepository.GetByIdAsync(createDto.IdentificationNumber);
+            var clientExists = await _clientRepository.GetByIdAsync(1, false);
             if (clientExists is not null)
                 throw new Exception("Cliente ya existe");
 
             var client = _mapper.Map<Client>(createDto);
             await _clientRepository.AddAsync(client);
+
+            return client.IdentificationNumber;
         }
 
-        public async Task UpdateAsync(string identificationNumber, ClientUpdateDto updateDto)
+
+        public async Task UpdateAsync(int identificationNumber, ClientUpdateDto updateDto)
         {
-            var existingClient = await _clientRepository.GetByIdAsync(identificationNumber);
+            var existingClient = await _clientRepository.GetByIdAsync(identificationNumber, false);
             if (existingClient == null)
-                throw new Exception("Cliente ya existe");
+                throw new Exception("Cliente no existe");
 
             _mapper.Map(updateDto, existingClient);
             await _clientRepository.UpdateAsync(existingClient);
         }
 
-        public async Task DeleteAsync(string identificationNumber)
+        public async Task DeleteAsync(int identificationNumber)
         {
-            var client = await _clientRepository.GetByIdAsync(identificationNumber);
+            var client = await _clientRepository.GetByIdAsync(identificationNumber, false);
             if (client is null)
                 throw new Exception("Cliente no existe");
 
-            await _clientRepository.DeleteAsync(identificationNumber);
+            await _clientRepository.DeleteAsync(client);
         }
 
-        public async Task<ClientDto?> GetByIdAsync(string identificationNumber)
+        public async Task<ClientDto?> GetByIdAsync(int identificationNumber)
         {
-            var clientExists = await _clientRepository.GetByIdAsync(identificationNumber);
+            var clientExists = await _clientRepository.GetByIdAsync(identificationNumber, false);
             if (clientExists == null)
                 throw new Exception("Cliente no existe");
             return _mapper.Map<ClientDto>(clientExists);

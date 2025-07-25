@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,10 +10,10 @@ namespace Domain.Models
 {
     public class Client
     {
-
         [Key]
-        [RegularExpression("^[0-9]{10}$", ErrorMessage = "El numero de identificacion solo puede tener 10 digitos")]
-        public int IdentificationNumber { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [RegularExpression(@"^\d{10}$")]
+        public int IdentificationNumber { get;  set; }
 
         [Required]
         [StringLength(100)]

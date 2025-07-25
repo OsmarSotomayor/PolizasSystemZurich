@@ -9,10 +9,6 @@ namespace Application.Dtos
 {
     public class ClientCreateDto
     {
-        [Required]
-        [StringLength(10, MinimumLength = 10)]
-        [RegularExpression("^[0-9]*$", ErrorMessage = "Identification number must be numeric.")]
-        public string IdentificationNumber { get; set; }
 
         [Required]
         [RegularExpression("^[a-zA-Z ]*$", ErrorMessage = "Name must contain only letters.")]
@@ -28,8 +24,6 @@ namespace Application.Dtos
 
     public class ClientUpdateDto : ClientCreateDto
     {
-        [Required]
-        public int Id { get; set; }
     }
 
     public class ClientDto

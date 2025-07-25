@@ -1,8 +1,10 @@
 ﻿using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,16 +30,25 @@ namespace Infraestructure
                 entity.Property(p => p.ClientId).IsRequired();
             });
 
-            modelBuilder.Entity<Client>()
-           .HasKey(c => c.IdentificationNumber);
+            modelBuilder.Entity<Client>(entity =>
+            {
+                entity.HasKey(c => c.IdentificationNumber); // Clave primaria
 
-            modelBuilder.Entity<Client>()
-                .HasIndex(c => c.Email)
-                .IsUnique();
+                entity.Property(c => c.IdentificationNumber)
+              .ValueGeneratedNever()
+              .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Throw);
 
-            modelBuilder.Entity<Client>()
-                .Property(c => c.FullName)
-                .IsRequired();
+                entity.Property(c => c.IdentificationNumber)
+                  .ValueGeneratedNever() // Ya lo tienes, es correcto
+                  .HasAnnotation("DatabaseGenerated", DatabaseGeneratedOption.None); // No es autoincremental (se asigna manualmente)
+
+                entity.HasIndex(c => c.Email)
+                      .IsUnique();
+
+                entity.Property(c => c.FullName)
+                      .IsRequired();
+                entity.HasIndex(c => c.IdentificationNumber).IsUnique();
+            });
 
             modelBuilder.Entity<Client>()
                 .HasMany(c => c.Policies)

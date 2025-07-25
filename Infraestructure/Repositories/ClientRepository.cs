@@ -21,34 +21,42 @@ namespace Infraestructure.Repositories
 
         public async Task<IEnumerable<Client>> GetAllAsync()
         {
-            return await _context.Clients.AsNoTracking().ToListAsync();
+            return await this.FindAll(false).ToListAsync();
         }
 
-        public async Task<Client?> GetByIdAsync(string identificationNumber)
+        public async Task<Client?> GetByIdAsync(int identificationNumber, bool track)
         {
-            return await _context.Clients.FindAsync(identificationNumber);
+            return await this.FindByCondition(cli => cli.IdentificationNumber == identificationNumber, track).FirstOrDefaultAsync(); 
         }
 
         public async Task AddAsync(Client client)
         {
-            _context.Clients.Add(client);
+            client.IdentificationNumber = GenerateUnique10DigitNumber();
+            this.Create(client);
             await _context.SaveChangesAsync();
         }
 
+        private int GenerateUnique10DigitNumber()
+        {
+            var rnd = new Random();
+            int number;
+            do
+            {
+                number = rnd.Next(1000000000, 2000000000); // Genera entre 1.000.000.000 y 1.999.999.999
+            } while (_context.Clients.Any(c => c.IdentificationNumber == number));
+
+            return number;
+        }
         public async Task UpdateAsync(Client client)
         {
             _context.Clients.Update(client);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(string identificationNumber)
+        public async Task DeleteAsync(Client client)
         {
-            var client = await _context.Clients.FindAsync(identificationNumber);
-            if (client != null)
-            {
-                _context.Clients.Remove(client);
-                await _context.SaveChangesAsync();
-            }
+            this.Delete(client);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Client>> FilterAsync(string? name, string? email, int identificationNumber)

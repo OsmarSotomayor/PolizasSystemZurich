@@ -10,10 +10,10 @@ namespace Domain.Interfaces
     public interface IClientRepository
     {
         Task<IEnumerable<Client>> GetAllAsync();
-        Task<Client?> GetByIdAsync(string identificationNumber);
+        Task<Client?> GetByIdAsync(int identificationNumber, bool track);
         Task AddAsync(Client client);
         Task UpdateAsync(Client client);
-        Task DeleteAsync(string identificationNumber);
+        Task DeleteAsync(Client client);
         Task<IEnumerable<Client>> FilterAsync(string? name, string? email, int identificationNumber);
     }
 }
