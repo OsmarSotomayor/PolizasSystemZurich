@@ -44,6 +44,7 @@ namespace Infraestructure
 
                 entity.HasIndex(c => c.Email)
                       .IsUnique();
+                entity.Property(c => c.Addres).IsRequired(false);
 
                 entity.Property(c => c.FullName)
                       .IsRequired();

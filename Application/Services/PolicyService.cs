@@ -49,5 +49,34 @@ namespace Application.Services
             return _mapper.Map<IEnumerable<PolicyResponseDto>>(policies);
         }
 
+        public async Task DesactivatePolicy(Guid idPolicy)
+        {
+            var policiy = await _policiyRepository.GetByIdAsync(idPolicy, true);
+            if (policiy.State == "Cancelada")
+                throw new Exception("Poliza esta cancelada");
+
+            policiy.State = "Cancelada";
+            await _policiyRepository.SaveAsync();
+        }
+
+        public async Task<IEnumerable<PolicyResponseDto>> FilterPoliciesAsync(
+            string? policyType = null,
+            string? state = null,
+            DateTime? startDateFrom = null,
+            DateTime? startDateTo = null,
+            DateTime? expirationDateFrom = null,
+            DateTime? expirationDateTo = null)
+        {
+            var policies = await _policiyRepository.FilterPoliciesAsync(
+                    policyType,
+                    state,
+                    startDateFrom,
+                    startDateTo,
+                    expirationDateFrom,
+                    expirationDateTo);
+
+            return _mapper.Map<IEnumerable<PolicyResponseDto>>(policies);
+        }
+
     }
 }

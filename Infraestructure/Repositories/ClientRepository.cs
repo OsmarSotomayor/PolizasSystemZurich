@@ -64,20 +64,25 @@ namespace Infraestructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Client>> FilterAsync(string? name, string? email, int identificationNumber)
+        public async Task<IEnumerable<Client>> FilterAsync(string? name, string? email, int? identificationNumber) // Cambiado a nullable
         {
             var query = _context.Clients.AsQueryable();
 
-            if (!string.IsNullOrEmpty(name))
+            if (!string.IsNullOrWhiteSpace(name))
                 query = query.Where(c => c.FullName.Contains(name));
 
-            if (!string.IsNullOrEmpty(email))
+            if (!string.IsNullOrWhiteSpace(email))
                 query = query.Where(c => c.Email.Contains(email));
 
-            if (identificationNumber != null)
-                query = query.Where(c => c.IdentificationNumber ==identificationNumber);
+            if (identificationNumber.HasValue && identificationNumber.Value != 0)
+                query = query.Where(c => c.IdentificationNumber == identificationNumber.Value);
 
-            return await query.ToListAsync();
+            return await query.AsNoTracking().ToListAsync();
+        }
+
+        public async Task SaveAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

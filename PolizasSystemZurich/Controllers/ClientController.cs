@@ -71,7 +71,7 @@ namespace PolizasSystemZurich.Controllers
         /// <param name="identificador"> identificador unico </param>
         /// <returns></returns>
         [HttpGet("filter")]
-        public async Task<ActionResult<IEnumerable<ClientDto>>> Filter(
+        public async Task<ActionResult<IEnumerable<ClientDto>>> Filter( //admin
             [FromQuery] string? name,
             [FromQuery] string? email,
             [FromQuery] int identificador)
@@ -91,6 +91,29 @@ namespace PolizasSystemZurich.Controllers
             return Ok(clients);
         }
 
-
+        /// <summary>
+        /// Actualiza información específica del cliente (dirección y teléfono)
+        /// </summary>
+        /// <param name="identificationNumber">Número de identificación del cliente (10 dígitos)</param>
+        /// <param name="clientDto">Datos a actualizar</param>
+        /// <response code="204">Actualización exitosa</response>
+        /// <response code="404">Cliente no encontrado</response>
+        [HttpPatch("{identificationNumber:int}/actualizar-datos")] //cliente
+        public async Task<IActionResult> UpdateClientData(
+            [FromRoute] int identificationNumber,
+            [FromBody] ClientUpdateDataDto clientDto)
+        {
+            try
+            {
+                await _clientService.UpdateInformationOfClient(identificationNumber, clientDto);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { Error = ex.Message });
+            }
+        }
     }
+
 }
+

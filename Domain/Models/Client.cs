@@ -26,6 +26,8 @@ namespace Domain.Models
         [Required]
         [Phone]
         public string PhoneNumber { get; set; }
+
+        public string Addres { get;  set; }
         public ICollection<Policy> Policies { get; set; }
     }
 }

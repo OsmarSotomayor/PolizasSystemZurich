@@ -20,11 +20,20 @@ namespace Application.Dtos
 
         [Required]
         public string PhoneNumber { get; set; }
+
+        public string Addres { get; set; }
     }
 
     public class ClientUpdateDto : ClientCreateDto
     {
     }
+
+    public class ClientUpdateDataDto
+    {
+        public string Addres { get; set; }
+        public string PhoneNumber { get; set; }
+    }
+
 
     public class ClientDto
     {
@@ -34,4 +43,6 @@ namespace Application.Dtos
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
     }
+
+
 }

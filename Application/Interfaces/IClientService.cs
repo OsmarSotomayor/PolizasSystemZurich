@@ -17,5 +17,7 @@ namespace Application.Interfaces
         Task<IEnumerable<ClientDto>> FilterAsync(string? name, string? email, int identificationNumber);
 
         Task<IEnumerable<ClientDto>> GetAllAsync();
+
+        Task UpdateInformationOfClient(int identificationNumber, ClientUpdateDataDto clientDto);
     }
 }

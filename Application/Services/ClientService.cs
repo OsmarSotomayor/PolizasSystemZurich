@@ -75,5 +75,15 @@ namespace Application.Services
             return _mapper.Map<IEnumerable<ClientDto>>(clients);
         }
 
+        public async Task UpdateInformationOfClient(int identificationNumber, ClientUpdateDataDto clientDto)
+        {
+            var clientExists = await _clientRepository.GetByIdAsync(identificationNumber, true);
+            if (clientExists == null)
+                throw new Exception("Cliente no existe");
+
+            clientExists.Addres = clientDto.Addres;
+            clientExists.PhoneNumber = clientDto.PhoneNumber;
+            await _clientRepository.SaveAsync();
+        }
     }
 }
