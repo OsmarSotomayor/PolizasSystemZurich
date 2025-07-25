@@ -21,7 +21,7 @@ namespace PolizasSystemZurich.Controllers
         /// <param name="clientDto"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ClientCreateDto clientDto)
+        public async Task<IActionResult> Create([FromBody] ClientCreateDto clientDto) //admin
         {
             int key = await _clientService.AddAsync(clientDto);
             return CreatedAtAction(nameof(GetById), new { identificador = key }, clientDto);
@@ -34,7 +34,7 @@ namespace PolizasSystemZurich.Controllers
         /// <param name="clientDto"></param>
         /// <returns></returns>
         [HttpPut("{identificador}")]
-        public async Task<IActionResult> Update(int identificador, [FromBody] ClientUpdateDto clientDto)
+        public async Task<IActionResult> Update(int identificador, [FromBody] ClientUpdateDto clientDto) //admin
         {
             await _clientService.UpdateAsync(identificador, clientDto);
             return NoContent();
@@ -46,7 +46,7 @@ namespace PolizasSystemZurich.Controllers
         /// <param name="identificador"></param>
         /// <returns></returns>
         [HttpDelete("{identificador}")]
-        public async Task<IActionResult> Delete(int identificador)
+        public async Task<IActionResult> Delete(int identificador) //admin
         {
             await _clientService.DeleteAsync(identificador);
             return NoContent();
@@ -58,7 +58,7 @@ namespace PolizasSystemZurich.Controllers
         /// <param name="identificador"></param>
         /// <returns></returns>
         [HttpGet("{identificador}")]
-        public async Task<ActionResult<ClientDto>> GetById(int identificador)
+        public async Task<ActionResult<ClientDto>> GetById(int identificador) //admin
         {
             var client = await _clientService.GetByIdAsync(identificador);
             return Ok(client);
@@ -85,10 +85,12 @@ namespace PolizasSystemZurich.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ClientDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<ClientDto>>> GetAll() //cliente
         {
             var clients = await _clientService.GetAllAsync();
             return Ok(clients);
         }
+
+
     }
 }

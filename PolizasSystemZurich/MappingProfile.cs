@@ -16,6 +16,12 @@ namespace Application
             CreateMap<Client, ClientDto>().ReverseMap();
             CreateMap<ClientCreateDto, Client>();
             CreateMap<ClientUpdateDto, Client>();
+
+            CreateMap<Policy, PolicyResponseDto>();
+
+            CreateMap<PolicyCreateDto, Policy>();
+            CreateMap<PolicyUpdateDto, Policy>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

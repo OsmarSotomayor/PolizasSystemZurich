@@ -37,6 +37,7 @@ builder.Services.AddScoped<IPoliciyRepository, PolicyRepository>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<IPolicyService, PolicyService>();
 
 var app = builder.Build();
 

@@ -26,7 +26,7 @@ namespace Infraestructure.Repositories
 
         public async Task AddAsync(Policy policy)
         {
-            await _context.Policies.AddAsync(policy);
+            this.Create(policy);
             await _context.SaveChangesAsync();
         }
 

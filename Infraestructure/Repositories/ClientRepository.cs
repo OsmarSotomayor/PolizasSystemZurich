@@ -29,6 +29,11 @@ namespace Infraestructure.Repositories
             return await this.FindByCondition(cli => cli.IdentificationNumber == identificationNumber, track).FirstOrDefaultAsync(); 
         }
 
+        public async Task<IEnumerable<Client>> GetPolicies(int identificationNumber)
+        {
+            return await _context.Clients.Where(cli => cli.IdentificationNumber == identificationNumber).Include(c =>c.Policies).ToListAsync();
+        }
+
         public async Task AddAsync(Client client)
         {
             client.IdentificationNumber = GenerateUnique10DigitNumber();

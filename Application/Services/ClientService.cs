@@ -74,5 +74,6 @@ namespace Application.Services
             var clients = await _clientRepository.GetAllAsync();
             return _mapper.Map<IEnumerable<ClientDto>>(clients);
         }
+
     }
 }
