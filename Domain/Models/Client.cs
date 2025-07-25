@@ -9,9 +9,10 @@ namespace Domain.Models
 {
     public class Client
     {
+
         [Key]
-        [RegularExpression("^[0-9]{10}$", ErrorMessage = "Identification number must be numeric and 10 digits long.")]
-        public string IdentificationNumber { get; set; }
+        [RegularExpression("^[0-9]{10}$", ErrorMessage = "El numero de identificacion solo puede tener 10 digitos")]
+        public int IdentificationNumber { get; set; }
 
         [Required]
         [StringLength(100)]
@@ -24,8 +25,6 @@ namespace Domain.Models
         [Required]
         [Phone]
         public string PhoneNumber { get; set; }
-
-        public string? Address { get; set; }
         public ICollection<Policy> Policies { get; set; }
     }
 }

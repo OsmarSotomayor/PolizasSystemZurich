@@ -1,5 +1,6 @@
 ﻿using Domain.Interfaces;
 using Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
@@ -9,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace Infraestructure.Repositories
 {
-    public class ClientRepository:IClientRepository
+    public class ClientRepository: RepositoryBase<Client> ,IClientRepository
     {
         private readonly AppDbContext _context;
 
-        public ClientRepository(AppDbContext context)
-        {
+        public ClientRepository(AppDbContext context): base(context) {
+        
             _context = context;
         }
 
@@ -50,7 +51,7 @@ namespace Infraestructure.Repositories
             }
         }
 
-        public async Task<IEnumerable<Client>> FilterAsync(string? name, string? email, string? identificationNumber)
+        public async Task<IEnumerable<Client>> FilterAsync(string? name, string? email, int identificationNumber)
         {
             var query = _context.Clients.AsQueryable();
 
@@ -60,8 +61,8 @@ namespace Infraestructure.Repositories
             if (!string.IsNullOrEmpty(email))
                 query = query.Where(c => c.Email.Contains(email));
 
-            if (!string.IsNullOrEmpty(identificationNumber))
-                query = query.Where(c => c.IdentificationNumber.Contains(identificationNumber));
+            if (identificationNumber != null)
+                query = query.Where(c => c.IdentificationNumber ==identificationNumber);
 
             return await query.ToListAsync();
         }

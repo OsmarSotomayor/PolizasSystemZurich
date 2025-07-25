@@ -14,6 +14,6 @@ namespace Domain.Interfaces
         Task AddAsync(Client client);
         Task UpdateAsync(Client client);
         Task DeleteAsync(string identificationNumber);
-        Task<IEnumerable<Client>> FilterAsync(string? name, string? email, string? identificationNumber);
+        Task<IEnumerable<Client>> FilterAsync(string? name, string? email, int identificationNumber);
     }
 }
