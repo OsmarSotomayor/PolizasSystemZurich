@@ -1,0 +1,29 @@
+# Build and output directories
+[Bb]in/
+[Oo]bj/
+out/
+publish/
+
+# IDE/Editor files
+.vs/
+.vscode/
+*.user
+*.suo
+*.userprefs
+
+# Dependencies (NuGet, npm, etc.)
+packages/
+node_modules/
+*.nupkg
+
+# Local development files
+appsettings.Development.json
+local.settings.json
+
+# Logs and temp files
+*.log
+*.tmp
+*.cache
+
+# Rider (opcional)
+.idea/
