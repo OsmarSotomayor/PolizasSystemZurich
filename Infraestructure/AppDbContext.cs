@@ -1,5 +1,6 @@
 ﻿using Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,17 @@ namespace Infraestructure
                 entity.Property(p => p.ClientId).IsRequired();
             });
             base.OnModelCreating(modelBuilder);
+        }
+    }
+
+    public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
+    {
+        public AppDbContext CreateDbContext(string[] args)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+            optionsBuilder.UseSqlServer("Server=tcp:zurichserve.database.windows.net,1433;Initial Catalog=Authentication;Persist Security Info=False;User ID=inicio_sql;Password=Soto17b*;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+
+            return new AppDbContext(optionsBuilder.Options);
         }
     }
 }
