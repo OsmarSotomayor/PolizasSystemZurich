@@ -9,7 +9,7 @@ namespace Application.Interfaces
 {
     public interface IPolicyService
     {
-        Task AddAsync(PolicyCreateDto createDto);
+        Task<Guid> AddAsync(PolicyCreateDto createDto);
 
         Task<IEnumerable<PolicyResponseDto>> GetPoliciesOfClient(int identificationClient);
 

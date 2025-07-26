@@ -25,7 +25,7 @@ namespace Application.Services
             this._clientRepository = clientRepository;
         }
 
-        public async Task AddAsync(PolicyCreateDto createDto)
+        public async Task<Guid> AddAsync(PolicyCreateDto createDto)
         {
             if (createDto.ExpirationDate < createDto.StartDate)
                 throw new Exception("Fecha de expiracion no puede ser mayor a fecha inicio");
@@ -37,6 +37,7 @@ namespace Application.Services
             var policy = _mapper.Map<Policy>(createDto);
             policy.ClientId = createDto.ClientIdentificator;
             await _policiyRepository.AddAsync(policy);
+            return policy.Id;
         }
 
         public async Task<IEnumerable<PolicyResponseDto>> GetPoliciesOfClient(int identificationClient)

@@ -1,11 +1,12 @@
 ﻿using Application.Dtos;
 using Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PolizasSystemZurich.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/clientes")]
     public class ClientController : ControllerBase
     {
         private readonly IClientService _clientService;
@@ -20,11 +21,19 @@ namespace PolizasSystemZurich.Controllers
         /// </summary>
         /// <param name="clientDto"></param>
         /// <returns></returns>
+        [Authorize(Policy = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ClientCreateDto clientDto) //admin
+        public async Task<IActionResult> Create([FromBody] ClientCreateDto clientDto) 
         {
-            int key = await _clientService.AddAsync(clientDto);
-            return CreatedAtAction(nameof(GetById), new { identificador = key }, clientDto);
+            try
+            {
+                int key = await _clientService.AddAsync(clientDto);
+                return CreatedAtAction(nameof(GetById), new { identificador = key }, clientDto);
+            }
+            catch (Exception ex) 
+            {
+                return Conflict(new { Error = ex.Message });
+            }
         }
 
         /// <summary>
@@ -33,11 +42,19 @@ namespace PolizasSystemZurich.Controllers
         /// <param name="identificador"></param>
         /// <param name="clientDto"></param>
         /// <returns></returns>
+        [Authorize(Policy = "Admin")]
         [HttpPut("{identificador}")]
-        public async Task<IActionResult> Update(int identificador, [FromBody] ClientUpdateDto clientDto) //admin
+        public async Task<IActionResult> Update(int identificador, [FromBody] ClientUpdateDto clientDto)
         {
-            await _clientService.UpdateAsync(identificador, clientDto);
-            return NoContent();
+            try
+            {
+                await _clientService.UpdateAsync(identificador, clientDto);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { Error = ex.Message });
+            }
         }
 
         /// <summary>
@@ -45,11 +62,20 @@ namespace PolizasSystemZurich.Controllers
         /// </summary>
         /// <param name="identificador"></param>
         /// <returns></returns>
+        [Authorize(Policy = "Admin")]
         [HttpDelete("{identificador}")]
         public async Task<IActionResult> Delete(int identificador) //admin
         {
-            await _clientService.DeleteAsync(identificador);
-            return NoContent();
+            try
+            {
+                await _clientService.DeleteAsync(identificador);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
+            
         }
 
         /// <summary>
@@ -60,8 +86,16 @@ namespace PolizasSystemZurich.Controllers
         [HttpGet("{identificador}")]
         public async Task<ActionResult<ClientDto>> GetById(int identificador) //admin
         {
-            var client = await _clientService.GetByIdAsync(identificador);
-            return Ok(client);
+            try
+            {
+                var client = await _clientService.GetByIdAsync(identificador);
+                return Ok(client);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { Error = ex.Message });
+            }
+            
         }
         /// <summary>
         /// Filtra clientes
@@ -70,25 +104,41 @@ namespace PolizasSystemZurich.Controllers
         /// <param name="email"> email del clienye</param>
         /// <param name="identificador"> identificador unico </param>
         /// <returns></returns>
+        [Authorize(Policy = "Admin")]
         [HttpGet("filter")]
         public async Task<ActionResult<IEnumerable<ClientDto>>> Filter( //admin
             [FromQuery] string? name,
             [FromQuery] string? email,
             [FromQuery] int identificador)
         {
-            var clients = await _clientService.FilterAsync(name, email, identificador);
-            return Ok(clients);
+            try
+            {
+                var clients = await _clientService.FilterAsync(name, email, identificador);
+                return Ok(clients);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
         }
 
         /// <summary>
         /// Consulta todos los clientes
         /// </summary>
         /// <returns></returns>
+        [Authorize(Policy = "Admin")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ClientDto>>> GetAll() //cliente
+        public async Task<ActionResult<IEnumerable<ClientDto>>> GetAll() //admin
         {
-            var clients = await _clientService.GetAllAsync();
-            return Ok(clients);
+            try
+            {
+                var clients = await _clientService.GetAllAsync();
+                return Ok(clients);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { Error = ex.Message });
+            }
         }
 
         /// <summary>
@@ -98,6 +148,7 @@ namespace PolizasSystemZurich.Controllers
         /// <param name="clientDto">Datos a actualizar</param>
         /// <response code="204">Actualización exitosa</response>
         /// <response code="404">Cliente no encontrado</response>
+        [Authorize(Policy = "Client")]
         [HttpPatch("{identificationNumber:int}/actualizar-datos")] //cliente
         public async Task<IActionResult> UpdateClientData(
             [FromRoute] int identificationNumber,

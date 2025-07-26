@@ -1,5 +1,7 @@
 ﻿using Application.Dtos;
 using Application.Interfaces;
+using Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PolizasSystemZurich.Controllers
@@ -20,11 +22,19 @@ namespace PolizasSystemZurich.Controllers
         /// </summary>
         /// <param name="policyDto"></param>
         /// <returns></returns>
+        [Authorize(Policy = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] PolicyCreateDto policyDto) //Admin
-        {
-            await _policyService.AddAsync(policyDto);
-            return Ok();
+        {        
+            try
+            {
+                var policiyId = await _policyService.AddAsync(policyDto);
+                return Ok(policiyId);
+            }
+            catch (Exception ex)
+            {
+                return Conflict(new { Error = ex.Message });
+            }
         }
 
         /// <summary>
@@ -32,11 +42,20 @@ namespace PolizasSystemZurich.Controllers
         /// </summary>
         /// <param name="clientId">identificador de 10 digitos del cliente</param>
         /// <returns></returns>
+        [Authorize(Policy = "Client")]
         [HttpGet("identificador-cliente/{clientId}")]
-        public async Task<IActionResult> GetPoliciesByClient([FromRoute] int clientId)
+        public async Task<IActionResult> GetPoliciesByClient([FromRoute] int clientId) //admin
         {
-            var policies = await _policyService.GetPoliciesOfClient(clientId);
-            return Ok(policies);    
+            try
+            {
+                var policies = await _policyService.GetPoliciesOfClient(clientId);
+                return Ok(policies);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
+               
         }
 
         /// <summary>
@@ -45,6 +64,7 @@ namespace PolizasSystemZurich.Controllers
         /// <param name="idPolicy">ID único de la póliza (GUID)</param>
         /// <response code="200">Póliza cancelada exitosamente</response>
         /// <response code="400">La póliza ya está cancelada o no existe</response>
+        [Authorize(Policy = "Client")]
         [HttpPatch("{idPolicy:guid}/cancelar")]
         public async Task<IActionResult> CancelPolicy([FromRoute] Guid idPolicy) //cliente
         {
@@ -68,6 +88,7 @@ namespace PolizasSystemZurich.Controllers
         /// <param name="startDateTo">Fecha de inicio hasta (formato: yyyy-MM-dd)</param>
         /// <param name="expirationDateFrom">Fecha de expiración desde (formato: yyyy-MM-dd)</param>
         /// <param name="expirationDateTo">Fecha de expiración hasta (formato: yyyy-MM-dd)</param>
+        [Authorize(Policy = "Admin")]
         [HttpGet("filter")]
         public async Task<IActionResult> FilterPolicies(  //admin
             [FromQuery] string? type = null,
